@@ -1,0 +1,28 @@
+# SecureScope configuration for this repository (Stage 07 gate config).
+# Merge gate: fail when a reachable finding at this severity (or above) exists.
+fail_on: high
+
+scan:
+  # Shannon-entropy threshold (bits/char) for the Stage 02 secret scanner.
+  entropy_threshold: 4.5
+  # OSV.dev lookups run online by default
+  offline: false
+
+ignore:
+  - ".securescope/"
+  - "outputs/"
+  - "**/*.min.js"
+
+# Dynamic Application Security Testing (DAST).
+dast:
+  enabled: true
+  dockerfile: Dockerfile          # Must match the name of your Dockerfile in the repo
+  target_port: 3000               # Change this to whatever port Flightly runs on in Docker
+  startup_timeout: 30             # How long to wait for the app to boot up
+  scan_timeout: 300               # Max time for the Nuclei vulnerability scan
+  scanner: nuclei
+  memory_limit: 512m
+  cpu_limit: 1.0
+  healthcheck:
+    path: /                           # Endpoint to verify the app is running (e.g. / or /api/health)
+    expected_status: 200              # Expected HTTP status code when healthy
